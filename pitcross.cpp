@@ -1,7 +1,7 @@
 /**
  * pitcross.cpp
  * @author John Salazar
- * @version 0.6.9
+ * @version 0.75
  * @date March 3, 2023
 */
 
@@ -77,10 +77,10 @@ public:
 
 	std::vector<std::vector<spaceState>> gridSpace;
 	std::vector<std::vector<spaceState>> keySpace;
+	std::vector<std::vector<spaceState>> last;
 
 	std::vector<std::string> pitcrossEventLog;
 	std::vector<std::string> hintsVectror;
-	std::vector<std::vector<spaceState>> last;
 
 	Example(int xSpace_Local, int ySpace_Local, std::string keyString_Local)
 	{
