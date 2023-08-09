@@ -7,6 +7,9 @@
 
 #include <cstdint>
 #include <sstream>
+#include <iostream>
+#include <string>
+#include <bitset>
 
 #ifndef GAMEBOARD_H
 #define GAMEBOARD_H
@@ -21,6 +24,7 @@
 #endif	
 
 
+
 /*  structs */
 /**
  * The gameSpace struct holds the status of the spaces in the game board 
@@ -31,6 +35,8 @@ enum spaceState
 	crossedOut,
 	filledIn
 };
+
+std::stringstream printMatInASCII(std::vector<std::vector<spaceState>>&);
 
 /*  functions   */
 void getFillPointsFromMousePoints(int32_t& x, int32_t& y, int32_t w, int32_t h)
@@ -137,14 +143,9 @@ void loadKeySpace(std::vector<std::vector<spaceState>> &mat/*spaceState (&mat)[r
 
 	//return;
 
-	for(int i = 0; i < x; i++)
-	{
-		for(int j = 0; j < y; j++)
-		{
-			std::cout << (mat[i][j] == filledIn? "* " : "- ");
-		}
-		std::cout << std::endl;
-	}
+	#ifdef DEBUG_PITCROSS
+	std::cout << printMatInASCII(mat).str();
+	#endif
 
 /*
 loadKeySpaceERROR:
@@ -236,6 +237,44 @@ void findHintsFromKey(std::vector<std::string>& hints, std::vector<std::vector<s
 		temp.str(std::string());
 
 	}
+
+}
+
+std::stringstream printMatInASCII(std::vector<std::vector<spaceState>> &mat)
+{
+	std::stringstream formatOut;
+	
+	for(int i = 0; i < mat.size(); i++)
+	{
+		for(int j = 0; j < mat[i].size(); j++)
+		{
+			formatOut << (mat[i][j] == filledIn? "* " : "- ");
+		}
+		formatOut << std::endl;
+	}
+
+	return formatOut;
+}
+
+std::string exportMatAsBinaryString(const std::vector<std::vector<spaceState>> &mat)
+{
+	std::pair<uint8_t, uint8_t> dim;
+	std::stringstream out;
+
+	dim.first = static_cast<uint8_t>(mat[0].size());	//x
+	dim.second = static_cast<uint8_t>(mat.size());		//y
+
+	out << std::bitset<8>(dim.first) << std::bitset<8>(dim.second);
+
+	for(int i = 0; i < mat.size()/*rows*/; i++)
+	{
+		for(int j = 0; j < mat[i].size()/*cols*/; j++)
+		{
+			out << (mat[i][j] == filledIn? 1 : 0);
+		}
+	}
+
+	return out.str();
 
 }
 
